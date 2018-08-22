@@ -1,4 +1,4 @@
-def HammingDistance( stringA, stringB):
+def HammingDistance(stringA, stringB):
     distance = 0
     for index, letter in enumerate(stringA):
         if stringB[index] != letter or index >= len(stringB):
