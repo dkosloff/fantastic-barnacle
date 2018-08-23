@@ -1,4 +1,4 @@
-def HammingDistance(stringA, stringB):
+def Calculate(stringA, stringB):
     '''Finds the number of characters that vary
     between two strings
     
