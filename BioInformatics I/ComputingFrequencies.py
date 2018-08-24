@@ -44,11 +44,11 @@ def ComputingFrequencies(Text, k):
     return results
 
 
-with open('data\dataset_2994_5.txt') as inputFile:
-    var1 = inputFile.readline().rstrip()
-    var2 = int(inputFile.readline().strip())
+# with open('data\dataset_2994_5.txt') as inputFile:
+#     var1 = inputFile.readline().rstrip()
+#     var2 = int(inputFile.readline().strip())
 
-with open('results/test2994_5results.txt', 'w') as output:
-    resultSet = ComputingFrequencies(var1, var2)
-    for result in resultSet:
-        print( result, end=' ', file=output)
+# with open('results/test2994_5results.txt', 'w') as output:
+#     resultSet = ComputingFrequencies(var1, var2)
+#     for result in resultSet:
+#         print( result, end=' ', file=output)

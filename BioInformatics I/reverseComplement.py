@@ -1,4 +1,4 @@
-def ReverseComplement(pattern):
+def Calulate(pattern):
     result = ''
 
     for i in range(len(pattern)-1, -1, -1):
@@ -14,9 +14,9 @@ def ReverseComplement(pattern):
     return result
 
 
-with open('data/dataset_3_2.txt') as patternFile:
-    pattern = patternFile.readline().rstrip().upper()
-    print( ReverseComplement(pattern) )
+# with open('data/dataset_3_2.txt') as patternFile:
+#     pattern = patternFile.readline().rstrip().upper()
+#     print( Calulate(pattern) )
 
 
 # with open("results/dataset_3_2.txt", "w") as text_file:
