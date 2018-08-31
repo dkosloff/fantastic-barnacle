@@ -6,7 +6,7 @@ def ApproximatePatternMatch(pattern, text, allowances):
     for i in range(0, len(text)-patternLength+1):
         if(i == len(text)-patternLength-1):
             x=3
-        if( HammingDistance.HammingDistance(text[i:patternLength+i], pattern) <= allowances):
+        if( HammingDistance.Calculate(text[i:patternLength+i], pattern) <= allowances):
             matches.append(i)
 
     return matches
