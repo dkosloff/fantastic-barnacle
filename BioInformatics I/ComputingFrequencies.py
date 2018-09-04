@@ -32,6 +32,20 @@ def NumberToPattern(index, k):
     return pattern
 
 def ComputingFrequencies(Text, k):
+    '''Returns the occurrences of all possible nucleotide 
+    strings of length k in a list where the index indicates
+    what the string actually is (using numberToPattern(index))
+    
+    Arguments:
+        Text {str} -- A string in which to search for occurences
+        k {int} -- The length of patterns for which to find occurences
+    
+    Returns:
+        list -- A list of the occurrences of patterns with length 'k'.
+        The pattern can be computed by passing the index value into
+        NumberToPattern
+    '''
+
     # initalize the properly-sized array with all zeroes
     largestIndexPattern = ''
     for y in range(0, k):

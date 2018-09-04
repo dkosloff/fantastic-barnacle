@@ -1,5 +1,47 @@
 import ProfileMostProbableKmer as pMostProb
 
+
+def getProfile(matrix):
+    '''Returns a probability matrix for a given matrix
+    by counting the total of each nucleotide in each 
+    columns and dividing that count by the total number
+    
+    Arguments:
+        matrix {[[str]]} -- A two-dimensional array 
+        of nucleotide characters
+    
+    Returns:
+        {char:[float]} -- A dictionary containing the 
+        probabilities of each letter in each position
+    '''
+
+    counts = {'A':[], 'C':[], 'T':[], 'G':[]}
+
+    # Initialize to ones to take advantage of Laplace's
+    # rule of succession (the absence of a nucleotide 
+    # in a position doesn't mean it should NEVER be 
+    # considered as a possible match, i.e. have probability 0)
+    for countList in counts.values():
+        for i in range(0,len(matrix[0])):
+            countList.append(1)
+
+    # Each position in matrix will have a letter
+    # update the appropriate index in counts based off
+    # that letter and column, counts ends up with the 
+    # the total for each letter in each column
+    for row in range(0, len(matrix)):
+        for col in range(0, len(matrix[row])):
+            counts[ matrix[row][col] ][col] += 1
+
+    # Transform the count list into a probability matrix
+    # Divide by matrix-length + 4 because of the ones added intially
+    for letter in counts:
+        for idx in range(0, len(counts[letter])):
+            counts[letter][idx] /= (len(matrix) + 4)
+
+    return counts
+
+
 def Search(dna, k, t):
     '''Finds the most likely matching strings of length k
     by comparing all strings of that length in dna, returning
@@ -18,48 +60,7 @@ def Search(dna, k, t):
         algorithm could find between all k-length strings in dna
     '''
 
-    def getProfile(dnaRow, j, k):
-        '''Creates a profile (a probability matrix) of size[dnaSnippet-k+1][k] 
-        from the given string dnaSnippet 
-        
-        Arguments:
-            row {int} -- The row in dna to use as a the source
-            j {int} -- The starting index of the dna strings 
-            k {int} -- The length of the string to create a profile for
-        
-        Returns:
-            {char:[float]} -- A dict of floating points denoting the
-            probability of the character (dict key) existing in that 
-            position in the string (e.g. {'A' : [0.25, ...] shows that 'A'
-            should occur in the first position in a string 1/4 of the time)
-        '''
-        counts = {'A':[], 'C':[], 'T':[], 'G':[]}
-        
-        for countList in counts.values():
-            for i in range(0,k):
-                countList.append(0)
 
-### This may be the problem...we should be returning just the probability 
-# for the first kmer in row one when dnaRow = 1, then when dnaRow = 2, we 
-# should be calculating it based on row 1 AND 2, so with each row, the amount
-# of values going into the calculation increases by k (not sure if this is happening)
-###
-
-# Seems to be working okay, but it's not getting the answer 
-# 'CAG', 'CAG', 'CAA', 'CAA', 'CAA' SO MAYBE THE findKmer method is messsed up
-
-        # Fill in the counts. We are counting from the first row
-        # to just before dnaRow
-        for row in range(0, dnaRow):
-            for col in range(j, j+k):
-                counts[ dna[row][col] ][col-j] += 1
-        
-        #  Transform the count list into a probability matrix
-        for letter in counts:
-            for idx in range(0, len(counts[letter])):
-                counts[letter][idx] /= dnaRow
-
-        return counts
 
     # Initialized with the first k characters from each dna string
     bestMotifs = []
@@ -75,7 +76,8 @@ def Search(dna, k, t):
         for dnaRow in range(1, t):
             # Get a char profile from the current kmer to the 
             # kmer in the last string of dna
-            profile = getProfile(dnaRow, j, k)
+            # profile = getProfile(dnaRow, j, k)
+            profile = getProfile(motifs)
             motifs.append(pMostProb.FindKmer( dna[dnaRow], k, profile))
         if Score(motifs) < Score(bestMotifs):
             bestMotifs = motifs
@@ -94,13 +96,13 @@ def Score(motifs):
             if value > maxValue:
                 maxValue = value
         score += len(motifs)- maxValue
-        print(str(motifs) + ": " + str(score))
     return score
 
-dna = []
-with open('data/dataset_test.txt') as inputFile:
-    [k,t] = map(int, inputFile.readline().split())
-    for line in inputFile:
-        dna.append(line.rstrip())
+# dna = []
+# with open('../../data/dataset_160_9.txt') as inputFile:
+#     [k,t] = map(int, inputFile.readline().split())
+#     for line in inputFile:
+#         dna.append(line.rstrip())
 
-print(Search(dna,k,t))
+# for value in Search(dna,k,t):
+#     print(value)

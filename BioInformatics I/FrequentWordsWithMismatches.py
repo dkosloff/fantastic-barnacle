@@ -23,8 +23,8 @@ def MostFrequentWithMismatches( text, k, d):
         pattern = text[i:k+i]
         #  Get all the neighbors (optionally include the 
         # reverse complements of the pattern)
-        neighborhood = Neighbors(pattern, d) + \
-            Neighbors(reverse.Calulate(pattern), d )
+        neighborhood = Neighbors(pattern, d) #+ \
+            # Neighbors(reverse.Calulate(pattern), d )
         for neighbor in neighborhood:
             index = cf.PatternToNumber(neighbor)
             frequencies[index] += 1
@@ -52,7 +52,7 @@ def Neighbors(pattern, d):
         neighbors -- A list of neighbors for a pattern
     '''
     if d == 0:
-        return pattern
+        return [pattern]
 
     if len(pattern) == 1:
         return nucleotides
@@ -70,13 +70,13 @@ def Neighbors(pattern, d):
 
     return neighborhood
 
-with open('./../../data/dataset_9_8.txt') as inputFile:
-    text = inputFile.readline().rstrip()
-    args = inputFile.readline().rstrip()
-    [k, d] = list(map(int, args.split()))
+# with open('./../../data/dataset_9_8.txt') as inputFile:
+#     text = inputFile.readline().rstrip()
+#     args = inputFile.readline().rstrip()
+#     [k, d] = list(map(int, args.split()))
 
-results = MostFrequentWithMismatches(text, k, d)
+# results = MostFrequentWithMismatches(text, k, d)
 
-with open('./../../results/FrequentWithMismatchResults.txt', 'w') as outFile:
-    for result in results:
-        print(result, end=' ', file=outFile)
+# with open('./../../results/FrequentWithMismatchResults.txt', 'w') as outFile:
+#     for result in results:
+#         print(result, end=' ', file=outFile)
