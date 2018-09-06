@@ -1,7 +1,29 @@
 import GreedyMotifSearch as gms
 import ProfileMostProbableKmer as pMostProb
 import random
+
+
 def Search(dna, k, t):
+    '''Finds strings of length 'k' in all the strings in dna
+    which are close matches to each other.  It does this by starting with
+    a random k-length substring from each dna string and building a probability
+    profile from that data, then searching each string for the k-length
+    substring which matches that profile most closely. If the score of the 
+    found data is better (the substrings match the profile better) than 
+    the random data, the new data is used to create the profile for
+    in the next iteration.  This continues until a better score can't be found,
+    at which point the best scoring group of strings is returned.
+
+    
+    Arguments:
+        dna {[str]} -- An array of strings to be searched for a common 
+        substring (with some mismatches)
+        k {int} -- The length of substring for which to search
+        t {int} -- The number of strings in dna
+    
+    Returns:
+        [str] -- The best matching set of strings from dna
+    '''
 
     currentMotif = []
     # For each strand in dna, choose a random starting
