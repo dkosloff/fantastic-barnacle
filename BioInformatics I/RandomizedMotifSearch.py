@@ -51,20 +51,22 @@ def Search(dna, k, t):
         else:
             return (bestMotif, bestScore)
 
-dna = []
-with open('../../data/dataset_test.txt') as inputFile:
-    [k,t] = map(int, inputFile.readline().split())
-    for line in inputFile:
-        dna.append(line.rstrip())
 
-finalMotif = finalScore = None
+# dna = []
+# with open('../../data/dataset_test.txt') as inputFile:
+#     [k,t] = map(int, inputFile.readline().split())
+#     for line in inputFile:
+#         dna.append(line.rstrip())
 
-(finalMotif, finalScore) = Search(dna, k, t)
-for i in range (0, 999):
-    result = Search(dna,k,t)
-    if result[1] < finalScore:
-        finalMotif = result[0]
-        finalScore = result[1]
+# finalMotif = finalScore = None
 
-for kmer in finalMotif:
-    print(kmer)
+# (finalMotif, finalScore) = Search(dna, k, t)
+# for i in range (0, 999):
+#     result = Search(dna,k,t)
+#     if result[1] < finalScore:
+#         finalMotif = result[0]
+#         finalScore = result[1]
+
+# for kmer in finalMotif:
+#     print(kmer)
+
