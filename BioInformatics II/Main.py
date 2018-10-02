@@ -1,17 +1,13 @@
 import GenomeSequencer as gs
 '''The entry point for the GenomeSequencer Program
 '''
-
-s = []
-with open('data/dataset_198_10.txt') as inputFile:
+inputData = {}
+with open('data/dataset_test.txt') as inputFile:
     for line in inputFile:
-        s.append(line.rstrip())
+        splitLine = line.strip().replace(' ', '').split('->')
+        inputData[ splitLine[0] ] = splitLine[1].split(',')
 
+result = gs.Sequencer().GetEulerianCycle(inputData)
 
-result = gs.Sequencer().GetAdjacencyList(s)
-
-with open('results/dataset_198_10_results.txt', 'w') as out:
-    for item in result:
-        if(len(result[item]) > 0):
-            print(item + ' -> ', end='', file=out)
-            print(','.join(result[item]), file=out)
+for item in result:
+    print(item, sep="->")
