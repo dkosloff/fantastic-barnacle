@@ -128,58 +128,43 @@ class Sequencer:
 
     def GetEulerianCycle(self, adjacencyList):
 
-        #  Important to avoid repeating starting from the same node
-        possibleStartingNodes = adjacencyList.keys
-
         # The list of nodes visited
         currentPath = []
-        lastVisited = ''
 
-        # Remove each item from the list as you "walk" along it
-        def VisitNode(fromNode, toNode):
-            try:
-                RemovePath(fromNode, toNode)
-                currentPath.append(toNode)
-            except ValueError as err:
-                print("Error visiting node:\n\t", err)
+        traveledEdges = {node : [] for node in adjacencyList.keys()}
+        
+        untraveledNodes = [*adjacencyList]
 
-        def RemovePath(fromNode, toNode):
-            if(toNode not in availableEdges[fromNode]):
-                raise ValueError("Edge doesn't exist: ", fromNode, " -> ", toNode)
-            
-            availableEdges[fromNode].remove(toNode)
-            # If the list is empty, remove the entire entry
-            if(len(availableEdges[fromNode] == 0)):
-                availableEdges.pop(fromNode)
+        def CreateCycle(startNode):
+            # Current path only has the start node, remove it from available
+            #  starts and use as the last visited node
+            currentPath.clear()
+            currentPath.append( startNode )
+            untraveledNodes.remove(startNode)
+            lastVisited = currentPath[0]
 
+            #  figure out the while...while there is a path from the 
+            # lastVisited node which hasn't been travelled before
+            while bool(set(adjacencyList[lastVisited]) - set(traveledEdges[lastVisited])):
+                print( "available: ", untraveledNodes)
+                print(lastVisited)
+                
+                # The important bit: choose a node from the adjacencyList which hasn't been chosen previously
+                nextNode = random.choice( list(set(adjacencyList[lastVisited]) - set(traveledEdges[lastVisited])) )
 
-        # A copy to modify as we go
-        availableEdges = adjacencyList.copy()
+                traveledEdges[lastVisited].append(nextNode)
+                untraveledNodes.remove(nextNode)
+                currentPath.append(nextNode)
+                lastVisited = nextNode
 
-        # Random starting node
-        currentPath.append( random.choice(adjacencyList.keys) )
-        lastVisited = currentPath[0]
+        # Get a cycle
+        CreateCycle( random.choice(list(adjacencyList.keys())) )
 
-        while( not possibleStartingNodes.empty ):
-            
-            possibleStartingNodes.pop( lastVisited )
-
-            # Get a cycle
-            while lastVisited in availableEdges :
-                nextNode = random.choice(availableEdges[lastVisited])
-                VisitNode( lastVisited, nextNode )
-                lastVisited= nextNode
-            
-            if availableEdges.empty :
-                return currentPath
-            # Set up for the next iteration
-            else : 
-                # Get a random node which wasn't visited and which we haven't yet started from 
-                lastVisited = random.choice(set(availableEdges.keys) - set(possibleStartingNodes))
-                currentPath.clear().append(lastVisited)
-                availableEdges = adjacencyList.copy()
-
-        # At this point you've explored starting at every node
-        # although you've traversed them randomly, so is it possible
-        # there's a solution mixed in there?
-        return None
+        while untraveledNodes : 
+            # Get a random node which wasn't visited and which we haven't yet started from 
+            newStartingNode = random.choice(untraveledNodes)
+            untraveledNodes = [*adjacencyList]
+            CreateCycle( newStartingNode )
+        
+        # Return the path if all edges have been traveled
+        return currentPath

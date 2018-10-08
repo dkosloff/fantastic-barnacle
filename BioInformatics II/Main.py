@@ -5,9 +5,9 @@ inputData = {}
 with open('data/dataset_test.txt') as inputFile:
     for line in inputFile:
         splitLine = line.strip().replace(' ', '').split('->')
-        inputData[ splitLine[0] ] = splitLine[1].split(',')
+        inputData[ int(splitLine[0]) ] = list(map(int, splitLine[1].split(',')))
 
 result = gs.Sequencer().GetEulerianCycle(inputData)
 
-for item in result:
-    print(item, sep="->")
+# for item in result:
+print(*result, sep="->")
