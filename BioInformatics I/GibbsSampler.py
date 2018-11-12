@@ -121,7 +121,7 @@ def GetWeightedDieRoll(weightList):
 
 
 dna = []
-with open('data/dataset_163_4.txt') as inputFile:
+with open('../../data/dataset_163_4.txt') as inputFile:
     [k, t, n] = map(int, inputFile.readline().split())
     for line in inputFile:
         dna.append( line.rstrip() )
@@ -138,6 +138,6 @@ for i in range(0, 19):
 
 print("LowestScore: " + str(score))
 
-with open('results/dataset_163_4_results.txt', 'w') as output:
+with open('../../results/dataset_163_4_results.txt', 'w') as output:
     for snippet in bestResult:
         print(snippet, file=output)
