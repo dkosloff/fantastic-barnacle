@@ -9,5 +9,5 @@ with open('data/dataset_test.txt') as inputFile:
 
 result = gs.Sequencer().GetEulerianCycle(inputData)
 
-# for item in result:
+# with open('results/dataset_203_2_results.txt', 'w') as output:
 print(*result, sep="->")

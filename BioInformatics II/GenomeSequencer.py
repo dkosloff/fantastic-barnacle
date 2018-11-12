@@ -129,42 +129,95 @@ class Sequencer:
     def GetEulerianCycle(self, adjacencyList):
 
         # The list of nodes visited
-        currentPath = []
 
-        traveledEdges = {node : [] for node in adjacencyList.keys()}
-        
-        untraveledNodes = [*adjacencyList]
-
-        def CreateCycle(startNode):
-            # Current path only has the start node, remove it from available
-            #  starts and use as the last visited node
-            currentPath.clear()
-            currentPath.append( startNode )
-            untraveledNodes.remove(startNode)
-            lastVisited = currentPath[0]
-
-            #  figure out the while...while there is a path from the 
-            # lastVisited node which hasn't been travelled before
-            while bool(set(adjacencyList[lastVisited]) - set(traveledEdges[lastVisited])):
-                print( "available: ", untraveledNodes)
-                print(lastVisited)
-                
-                # The important bit: choose a node from the adjacencyList which hasn't been chosen previously
-                nextNode = random.choice( list(set(adjacencyList[lastVisited]) - set(traveledEdges[lastVisited])) )
-
-                traveledEdges[lastVisited].append(nextNode)
-                untraveledNodes.remove(nextNode)
-                currentPath.append(nextNode)
-                lastVisited = nextNode
+        # The set of nodes which have unexplored neighbors
+        hasUnvisitedNeighbors = set()
 
         # Get a cycle
-        CreateCycle( random.choice(list(adjacencyList.keys())) )
+        finalCycle = Sequencer.CreateCycle( self, random.choice(list(adjacencyList.keys())), hasUnvisitedNeighbors, adjacencyList)[0]
+        tempStack = []
+        while len(hasUnvisitedNeighbors) != 0:
 
-        while untraveledNodes : 
-            # Get a random node which wasn't visited and which we haven't yet started from 
-            newStartingNode = random.choice(untraveledNodes)
-            untraveledNodes = [*adjacencyList]
-            CreateCycle( newStartingNode )
+            # Get a random node which wasn't visited in this cycle 
+            newStartingNode = random.choice( list(hasUnvisitedNeighbors) )
+
+            # Here's where it all comes together. Open up the finalCycle
+            # at the newStartingNode, insert a new cycle which starts at
+            # that node and then put the top back on the sandwich
+            
+            # Split the cycle into two sections
+            node = finalCycle.pop()
+            while node != newStartingNode:
+                tempStack.append(node)
+                node = finalCycle.pop()
+
+            # A new cycle which intersects this cycle (starts at this node)
+            finalCycle += Sequencer.CreateCycle(self, newStartingNode, hasUnvisitedNeighbors, adjacencyList )[0]
+
+            # Put the cycle back together
+            while tempStack:
+                finalCycle.append(tempStack.pop())
         
         # Return the path if all edges have been traveled
-        return currentPath
+        return finalCycle
+    
+    def CreateCycle(self, startNode, hasUnvisitedNeighbors, adjacencyList):
+        '''Helper function which creates a cycle from an adjacency list
+        NOTE: this function modifies adjacencyList and hasUnvisitedNeighbors
+        
+        Arguments:
+            startNode {int} -- A number indicating which node in adjacencyList 
+            should be used as the starting node
+            hasUnvisitedNeighbors {set} -- A set of nodes which have unexplored
+            neighbors -will be updated with new members in this method
+            adjacencyList {{int:[int]}} -- A mapping of nodes to their neighbors
+            -will be updated in this method, all nodes returned from this method
+            will be removed from this list
+        
+        Returns:
+            [([int], int, int)] -- A cycle found in adjacencyList, plus any found
+            starting node or ending node (those without connecting nodes)
+        '''
+
+        currentCycle = [startNode]
+        foundStartNode = None
+        foundEndNode = None
+        # Stop when we have two of the current node in the 
+        # cycle (the cycle is complete at this point)
+        while currentCycle[-1] != currentCycle[0] or len(currentCycle) == 1:
+            currentNode = currentCycle[-1]
+
+            try:
+                nextNode = random.choice( adjacencyList[currentNode] )
+                if nextNode not in adjacencyList:
+                    foundEndNode = nextNode
+                    adjacencyList[currentNode].remove(nextNode)
+                    nextNode = random.choice( adjacencyList[currentNode] )
+
+            except:
+                print("Trying to access node which doesn't exist!!")
+
+            # Housekeeping, move from neighbor list to currentCycle, keep track of or delete
+            adjacencyList[currentNode].remove(nextNode)
+            if len(adjacencyList[currentNode]) > 0:
+                hasUnvisitedNeighbors.add(currentNode)
+            else:
+                if currentNode in hasUnvisitedNeighbors:
+                    hasUnvisitedNeighbors.remove(currentNode)
+                del adjacencyList[currentNode]
+
+            currentCycle.append(nextNode)
+            
+        return (currentCycle, foundStartNode, foundEndNode)
+
+    def GetEulerianPath(self, adjacencyList):
+        # When trying to get a cycle, if you are trying to get 
+        # a value of adjacencyList[currentNode] in createCycle above 
+        # and it doesn't exist, it's the end node.  The node that is 
+        # left over when 
+        startNode = None
+        endNode = None
+
+        # We can now send back the end node, but we need to find the start node.
+        # It has to do with 
+
